@@ -1,11 +1,12 @@
 import os
 import base64
 import streamlit as st
-from test import chat_css, user_template, bot_template
+from HtmlTemplate import chat_css, user_template, bot_template
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+from langchain.prompts import ChatPromptTemplate
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
@@ -14,10 +15,7 @@ os.environ["OPENAI_API_KEY"] = "REMOVED_SECRET"
 # Streamlit application
 st.set_page_config(page_title="Chat with multiple PDFs",
                        page_icon=":books:")
-
-# Main Streamlit app
 st.markdown(chat_css, unsafe_allow_html=True)
-# st.header("Chat with multiple PDFs :books:")
 
 
 # File uploader to upload a PDF file
@@ -61,6 +59,7 @@ def get_conversation_chain(vectorstore):
     llm = ChatOpenAI()
     # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
 
+    prompt = ChatPromptTemplate("You are a helpful reading assistant and you are to answer based on the retrieval information provided only")
     memory = ConversationBufferMemory(
         memory_key='chat_history', return_messages=True)
     conversation_chain = ConversationalRetrievalChain.from_llm(
@@ -70,30 +69,22 @@ def get_conversation_chain(vectorstore):
         stream=True
     )
     return conversation_chain
-# def handle_userinput(user_question):
-
-#     response = st.session_state.conversation({'question': user_question})
-#     st.session_state.chat_history = response['chat_history']
-#     print(st.session_state.chat_history)
-
-#     for i, message in enumerate(st.session_state.chat_history):
-#         if i % 2 == 0:
-#             st.markdown(user_template.replace(
-#                 "{{MSG}}", message.content), unsafe_allow_html=True)
-#         else:
-#             st.write(bot_template.replace(
-#                 "{{MSG}}", message.content), unsafe_allow_html=True)
-
 
 def handle_userinput(user_question):
 
     response = st.session_state.conversation({'question': user_question})
     st.session_state.chat_history = response['chat_history']
+    print(st.session_state.chat_history)
 
-    st.markdown(user_template.replace(
-                "{{MSG}}", st.session_state.chat_history[-2].content), unsafe_allow_html=True)
-    st.write(bot_template.replace(
-                "{{MSG}}", st.session_state.chat_history[-1].content), unsafe_allow_html=True)
+    for i, message in enumerate(st.session_state.chat_history):
+        if i % 2 == 0:
+            st.write(user_template.replace(
+                "{{MSG}}", message.content), unsafe_allow_html=True)
+        else:
+            st.write(bot_template.replace(
+                "{{MSG}}", message.content), unsafe_allow_html=True)
+
+
 
 
 #st.write('<div style="height: 650px;"></div>', unsafe_allow_html=True)
@@ -103,14 +94,12 @@ def main():
     # st.set_page_config(page_title="Chat with multiple PDFs",
     #                    page_icon=":books:")
     st.write(chat_css, unsafe_allow_html=True)
+    st.header("Chat with multiple PDFs :books:")
 
     if "conversation" not in st.session_state:
         st.session_state.conversation = None
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
-
-    st.header("Chat with multiple PDFs :books:")
-  #  user_question = st.text_input("Ask a question about your documents:")
 
     # Receive user input and add it to the chat history
     user_question = st.chat_input("Enter your message:", key="chat_input")
@@ -141,63 +130,6 @@ if __name__ == '__main__':
     main()
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# if user_input:
-#     chat_history.append({"sender": "user", "message": user_input})
-#     st.experimental_rerun()
-
-# if "messages" not in st.session_state:
-#         st.session_state.messages = []
-
-# # Display existing chat messages
-# for message in st.session_state.messages:
-#     with st.chat_message(message["role"]):
-#         st.markdown(message["content"])
-
-# # Receive user input and add it to the chat history
-# user_input = st.chat_input("Enter your message:", key="chat_input")
-# if user_input:
-#     # chat_history.add_user_message(user_input)
-#     st.chat_message("user").markdown(user_input)
-#     st.session_state.messages.append({"role": "user", "content": user_input})
-
-
 # def chat_mode(model):
 #     # Function for interactive chat mode with a language model
 #     chat_history = ChatMessageHistory()
@@ -206,11 +138,7 @@ if __name__ == '__main__':
 #     if "messages" not in st.session_state:
 #         st.session_state.messages = []
 
-#     # Display existing chat messages
-#     for message in st.session_state.messages:
-#         with st.chat_message(message["role"]):
-#             st.markdown(message["content"])
-
+#
 #     # Receive user input and add it to the chat history
 #     user_input = st.chat_input("Enter your message:", key="chat_input")
 #     if user_input:

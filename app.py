@@ -1,15 +1,17 @@
 import os
 import base64
 import streamlit as st
-from HtmlTemplate import chat_css, user_template, bot_template
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-from langchain.prompts import ChatPromptTemplate
+from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
-from langchain.chains import ConversationalRetrievalChain
+from langchain.chains import ConversationalRetrievalChain,create_history_aware_retriever, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from HtmlTemplate import chat_css, user_template, bot_template
+from langchain_core.messages import AIMessage, HumanMessage
 
 os.environ["OPENAI_API_KEY"] = "REMOVED_SECRET"
 # Streamlit application
@@ -57,16 +59,14 @@ def get_vectorstore(text_chunks):
     return vectorstore
 def get_conversation_chain(vectorstore):
     llm = ChatOpenAI()
-    # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
 
-    prompt = ChatPromptTemplate("You are a helpful reading assistant and you are to answer based on the retrieval information provided only")
+    #prompt = ChatPromptTemplate("You are a helpful reading assistant and you are to answer based on the retrieval information provided only")
     memory = ConversationBufferMemory(
         memory_key='chat_history', return_messages=True)
     conversation_chain = ConversationalRetrievalChain.from_llm(
         llm=llm,
         retriever=vectorstore.as_retriever(),
         memory=memory,
-        stream=True
     )
     return conversation_chain
 
@@ -84,15 +84,8 @@ def handle_userinput(user_question):
             st.write(bot_template.replace(
                 "{{MSG}}", message.content), unsafe_allow_html=True)
 
-
-
-
-#st.write('<div style="height: 650px;"></div>', unsafe_allow_html=True)
-
 def main():
-   # load_dotenv()
-    # st.set_page_config(page_title="Chat with multiple PDFs",
-    #                    page_icon=":books:")
+
     st.write(chat_css, unsafe_allow_html=True)
     st.header("Chat with multiple PDFs :books:")
 

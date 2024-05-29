@@ -19,22 +19,6 @@ st.set_page_config(page_title="Chat with multiple PDFs",
                        page_icon=":books:")
 st.markdown(chat_css, unsafe_allow_html=True)
 
-
-# File uploader to upload a PDF file
-# with st.sidebar:
-#     uploaded_file = st.file_uploader("Upload a PDF file", type="pdf")
-
-#     if uploaded_file is not None:
-#         # Read the PDF file as bytes
-#         pdf_bytes = uploaded_file.read()
-
-#         # Base64 encode the PDF bytes
-#         base64_pdf = base64.b64encode(pdf_bytes).decode('utf-8')
-
-#         # Embed PDF in the page using an iframe
-#         pdf_display = f'<iframe src="data:application/pdf;base64,{base64_pdf}" width="600" height="1000" type="application/pdf"></iframe>'
-#         st.markdown(pdf_display, unsafe_allow_html=True)
-
 def get_pdf_text(pdf_docs):
     text = ""
     for pdf in pdf_docs:

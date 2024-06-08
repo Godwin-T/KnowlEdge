@@ -12,8 +12,10 @@ from langchain.chains import ConversationalRetrievalChain, create_history_aware_
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from HtmlTemplate import chat_css, user_template, bot_template
 from langchain_core.messages import AIMessage, HumanMessage
+from langchain_groq.chat_models import ChatGroq
 
 os.environ["OPENAI_API_KEY"] = "REMOVED_SECRET"
+os.environ["GROQ_API_KEY"] = "REMOVED_SECRET"
 # Streamlit application
 st.set_page_config(page_title="Chat with multiple PDFs",
                        page_icon=":books:")
@@ -74,7 +76,7 @@ def get_conversation_chain(vectorestore):
         ]
     )
 
-    llm = ChatOpenAI()
+    llm = ChatGroq()
     retriever = vectorestore.as_retriever()
     history_aware_retriever = create_history_aware_retriever(
         llm, retriever, contextualize_q_prompt
@@ -89,10 +91,6 @@ def model_generation(user_question, chat_history, rag_chain):
     response = rag_chain.invoke({"input": user_question, "chat_history":chat_history})
     chat_history.extend([HumanMessage(content=user_question), AIMessage(content =response["answer"])])
 
-# def stream_data(data):
-#     for word in data.split(" "):
-#         yield word + " "
-
 
 def handle_userinput(user_question):
 
@@ -104,10 +102,10 @@ def handle_userinput(user_question):
             st.write(bot_template.replace(
                 "{{MSG}}", message.content), unsafe_allow_html= True)
 
-    response = st.session_state.conversation.invoke({'input': user_question, "chat_history": st.session_state.chat_history})['answer']
-    st.session_state.chat_history.append(AIMessage(content =response))
+    response = st.session_state.conversation.invoke({'input': user_question, "chat_history": st.session_state.chat_history})
+    st.session_state.chat_history.append(AIMessage(content =response['answer']))
     st.write(bot_template.replace(
-                "{{MSG}}", response), unsafe_allow_html= True)
+                "{{MSG}}", response['answer']), unsafe_allow_html= True)
 
 
 

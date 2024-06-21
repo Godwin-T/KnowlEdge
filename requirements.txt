@@ -1,0 +1,11 @@
+openai
+faiss-cpu
+pypdf2
+streamlit
+groq
+langchain_community
+langchain
+langchain_groq
+langchain_core
+llama-parse
+streamlit-chat

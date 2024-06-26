@@ -19,7 +19,7 @@ To run the program, follow these steps:
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/your-repo.git
-   cd your-repo ```
+   cd your-repo
 
 2  **Build the Docker Image:**
     Build the Docker image using the provided Dockerfile and tag it with a version number (v1 in this example):

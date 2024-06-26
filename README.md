@@ -21,17 +21,15 @@ To run the program, follow these steps:
    git clone https://github.com/your-repo.git
    cd your-repo
 
-2  **Build the Docker Image:**
+2.  **Build the Docker Image:**
     Build the Docker image using the provided Dockerfile and tag it with a version number (v1 in this example):
     ```bash
     docker build -t <tag-name>:v1 .
 
-3  **Run the Docker Container:**
+3.  **Run the Docker Container:**
     Start a Docker container with the built image. Be sure to pass your OpenAI API key using the -e environment variable option:
     ```bash
-    docker run -d \
-    -e OPENAI_API_KEY="<openai api key>" \
-    <tag-name>:v1
+    docker run -d -e OPENAI_API_KEY="<openai api key>" -e <tag-name>:v1
 
 4.  **Verify Installation:**
     Confirm that the Docker container is running correctly and accessible as expected.

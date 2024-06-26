@@ -10,7 +10,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 
-os.environ["OPENAI_API_KEY"] = "REMOVED_SECRET"
+os.environ["OPENAI_API_KEY"] = ""
 # Streamlit application
 st.set_page_config(page_title="Chat with multiple PDFs",
                        page_icon=":books:")

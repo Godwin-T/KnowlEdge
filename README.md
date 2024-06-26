@@ -34,11 +34,12 @@ To run the program, follow these steps:
 4.  **Verify Installation:**
     Confirm that the Docker container is running correctly and accessible as expected.
 
-5.  **Prerequisites**
+**Prerequisites:**
 
-    Docker installed on your machine.
-    An OpenAI API key obtained from OpenAI.
+   1. Docker installed on your machine.
+   2. An OpenAI API key obtained from OpenAI.
 
-**Notes**
-    Replace <tag-name> with your desired Docker image tag name.
-    Ensure your OpenAI API key is securely stored and passed to the Docker container as shown above.
+**Notes:**
+
+   1. Replace <tag-name> with your desired Docker image tag name.
+   2. Ensure your OpenAI API key is securely stored and passed to the Docker container as shown above.
